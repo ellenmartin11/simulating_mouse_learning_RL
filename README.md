@@ -1,6 +1,6 @@
-# RL-Bandit-Model-Fitting: Simulating Mouse Learning Strategies
+# Simulating Mouse Learning Strategies with Reinforcement Learning Models
 
-This repository contains the final project for \[DSCI 6612 - Intro to AI\] at \[University of New Haven\]. The goal of this project is to model and simulate mouse behavior in a dynamic two-armed bandit task, with multiple reward probability conditions.
+This repository contains the final project for DSCI 6612 - Intro to AI at the University of New Haven. The goal of this project is to model and simulate mouse behavior in a dynamic two-armed bandit task, with multiple reward probability conditions.
 
 This project implements several reinforcement learning (RL) agents with increasing complexity to simulate mouse learning and decision-making, from a simple Epsilon-Greedy Q-learner to a complex Boltzmann agent with anticipatory switching behaviour (picking the non-rewarding arm). These agents are fit to real behavioral data from Beron et al (2022) to find the model and parameters that best explain the average learning of mice in the two-armed bandit task. 
 
