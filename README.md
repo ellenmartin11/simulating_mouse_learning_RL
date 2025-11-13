@@ -53,6 +53,8 @@ For simpler models, 1000 simulations can be specified, with 50 search parameter 
 
 For the more complex Boltzmann Anticipation agent, I recommend 500 simulations, reducing to 30 parameter sets. 
 
+Running the terminal commands will generate a plot comparing the specified agent's average behaviour (over specified number of simulations) with the average mouse behaviour (averaged over all mice in Beron et al (2022)). A second plot will also be generated, illustrating the agent's estimate of Q-values across trials.
+
 **Usage:**
 
 ```bash
