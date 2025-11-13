@@ -18,7 +18,7 @@ def calculate_rmse(agent_curve, mouse_curve):
     return np.sqrt(np.mean((agent_data - mouse_data)**2))
 
 def parse_condition_arg(c):
-    """Converts a condition arg (e.g., '80') into a string and probs."""
+    """Get specific probability condition from string in 'Condition' column of dataset."""
     if c == '70':
         condition_str = '70-30'
         prob_high, prob_low = 0.7, 0.3
@@ -50,19 +50,19 @@ class QLearningAgent_EpsilonGreedy:
         self.q_values = np.zeros(num_actions)
 
     def choose_action(self, trial_number):
-        if random.uniform(0,1) < self.epsilon:
-            action = random.choice([0,1])
+        if random.uniform(0,1) < self.epsilon: 
+            action = random.choice([0,1]) #COIN FLIP to decide action (in this case right or left)
         else:
-            action = np.argmax(self.q_values)
+            action = np.argmax(self.q_values) #otherwise q-maximizing action
             
-        if self.epsilon > self.min_epsilon:
+        if self.epsilon > self.min_epsilon: #apply decay to epsilon to avoid continuous exploration
             self.epsilon *= self.decay_rate
         return action
     
-    def update_q_value(self, action, reward, trial_number):
+    def update_q_value(self, action, reward, trial_number): #q(a) <- q(a) + alpha[r - q(a)]
         self.q_values[action] = self.q_values[action] + self.alpha * (reward - self.q_values[action])
         
-    def reset(self): 
+    def reset(self): #reset epsilon and q-values for each simulation
         self.epsilon = self.start_epsilon
         self.q_values = np.zeros(self.num_actions)
         
@@ -77,22 +77,22 @@ class QLearningAgent_EpsilonGreedyPersev:
         self.start_epsilon = start_epsilon
         self.min_epsilon = min_epsilon
         self.decay_rate = decay_rate
-        self.perseverance_bonus = perseverance_bonus
+        self.perseverance_bonus = perseverance_bonus #perseverance agent - might not report because it doesn't really add anything...
         self.last_action = None
         self.num_actions = num_actions
         self.q_values = np.zeros(num_actions)
 
     def choose_action(self, trial_number):
-        if random.uniform(0,1) < self.epsilon:
+        if random.uniform(0,1) < self.epsilon: #same code as before
             action = random.choice([0,1])
         else:
-            effective_q_values = self.q_values.copy()
-            if self.last_action is not None:
-                effective_q_values[self.last_action] += self.perseverance_bonus
-            action = np.argmax(effective_q_values)
+            effective_q_values = self.q_values.copy() #make a copy of q-values
+            if self.last_action is not None: #if previously an action was taken
+                effective_q_values[self.last_action] += self.perseverance_bonus #give a little bonus for taking the same action again (perseverance/sticky bonus)
+            action = np.argmax(effective_q_values) #same maximizing action selection though
             
         if self.epsilon > self.min_epsilon:
-            self.epsilon *= self.decay_rate
+            self.epsilon *= self.decay_rate #decay
         self.last_action = action
         return action
     
@@ -103,7 +103,7 @@ class QLearningAgent_EpsilonGreedyPersev:
         else:
              self.last_action = action
 
-    def reset(self):
+    def reset(self): #reset
         self.epsilon = self.start_epsilon
         self.q_values = np.zeros(self.num_actions)
         self.last_action = None
@@ -124,11 +124,12 @@ class QLearningAgent_Forgetting:
         self.q_values = np.zeros(num_actions)
 
     def choose_action(self, trial_number): 
-        if random.uniform(0, 1) < self.epsilon:
+        if random.uniform(0, 1) < self.epsilon: #same coin toss
             action = random.choice([0, 1])
         else:
             action = np.argmax(self.q_values)
-        if self.epsilon > self.min_epsilon:
+            
+        if self.epsilon > self.min_epsilon: #epsilon decay
             self.epsilon *= self.decay_rate
         return action
 
