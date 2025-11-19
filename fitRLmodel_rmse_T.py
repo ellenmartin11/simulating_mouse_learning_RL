@@ -7,9 +7,9 @@ import argparse
 from itertools import product
 import time
 import sys
+import os
 
 #HELPER FUNCTIONS (calculating RMSE, parsing experimental conditions)
-
 def calculate_rmse(agent_curve, mouse_curve):
     """Calculates the RMSE between two average behavior curves."""
     min_length = min(len(agent_curve), len(mouse_curve))
@@ -34,7 +34,6 @@ def parse_condition_arg(c):
 
 
 # REINFORCEMENT LEARNING AGENT SPECIFICATIONS
-
 # BASIC EPSILON GREEDY Q LEARNING 
 class QLearningAgent_EpsilonGreedy:
     """
@@ -216,7 +215,7 @@ class QLearningAgent_BoltzmannAnticipation:
         self.is_learning_phase = True
     
 
-# --- 3. Model Registry & Search Ranges ---
+#Model Registry & Search Ranges
 MODELS = {
     'epsilon_greedy': {
         'class': QLearningAgent_EpsilonGreedy,
@@ -268,9 +267,9 @@ MODELS = {
     }
 }
 
-# --- 4. Core Functions ---
+#Core Functions ---
 
-def load_and_prep_data(datafile, condition_str, max_trials = None):
+def load_and_prep_data(datafile, condition_str, max_trials=None): 
     """Loads and prepares data, and returns the average mouse curve."""
     try:
         data = pd.read_csv(datafile)
@@ -282,17 +281,17 @@ def load_and_prep_data(datafile, condition_str, max_trials = None):
     if data_condition.empty:
         print(f"Error: No data found for condition '{condition_str}'.")
         sys.exit()
-        
-    if max_trials is not None: #to deal with all the noise from not many mice having a huge number of trials
+
+    #Filter by max_trials before doing any analysis
+    if max_trials is not None:
         print(f"Truncating analysis to trials 1 through {max_trials}.")
         data_condition = data_condition[data_condition['blockTrial'] <= max_trials].copy()
-   
 
     data_condition['correct_choice'] = (data_condition['Decision'] == data_condition['Target']).astype(int)
     average_mouse_behavior = data_condition.groupby('blockTrial')['correct_choice'].mean()
     mouse_curve_data = average_mouse_behavior.values
     
-    print(f"Data loaded for {condition_str}. Analyzing {len(mouse_curve_data)} trials.")
+    print(f"Data loaded for {condition_str}. Analyzing {len(mouse_curve_data)} trials.") # <-- MODIFIED
     return data_condition, mouse_curve_data
 
 def simulate_agent_with_params(model_name, params_dict, num_trials, prob_high, prob_low, num_simulations):
@@ -410,7 +409,7 @@ def find_best_model_by_rmse(model_name, mouse_curve_data, num_trials, prob_high,
     return best_params, best_agent_curve, best_rmse, best_q_curve
 
 #PLOTTING
-def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, best_params, rmse, max_trials = None):
+def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, best_params, rmse, max_trials=None):
     """Generates and saves the final plot."""
     print("Generating final plot...")
     plt.figure(figsize=(12, 6))
@@ -424,28 +423,28 @@ def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, 
              agent_curve_data, 
              label=f'Simulated Agent (RMSE={rmse:.4f})', 
              linestyle='--', linewidth=2)
-
-
+    
+    #Add max_trials to title and filename ---
     title_str = f'Mouse Behavior vs. Best-Fit Agent ({model_name})'
     filename_str = f"plot_{model_name}_{condition_str}_fit_RMSE"
     if max_trials is not None:
         title_str += f" (Trials 1-{max_trials})"
         filename_str += f"_T{max_trials}"
-        
-        
-    plt.title(title_str)    
+
+    plt.title(title_str)
     plt.xlabel('Trials Since Switch (blockTrial)')
     plt.ylabel('% "Good" Option Chosen')
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
     
-    filename = f"{filename_str}.png" # <-- MODIFIED
-    plt.savefig(filename)
-    print(f"Plot saved as {filename}")
+    filename = f"{filename_str}.png"
+    save_path = os.path.join("plots", filename)
+    plt.savefig(save_path)
+    print(f"Plot saved as {save_path}")
     plt.show()
 
 #Q-VALUE HISTORY PLOTTING
-def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, model_name, max_trials = None):
+def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, model_name, max_trials=None): # <-- MODIFIED
     """
     Generates and saves a plot of the agent's Q-value estimates over time.
     """
@@ -473,23 +472,26 @@ def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, mode
                 label=f"Actual Probability (Good Arm = {prob_high})")
     plt.axhline(y=prob_low, color='red', linestyle='-', alpha=0.5, 
                 label=f"Actual Probability (Bad Arm = {prob_low})")
-    
+
+    #Add max_trials to title and filename ---
     title_str = f"Agent's Q-Value Learning Curve ({model_name}, {condition_str})"
     filename_str = f"plot_{model_name}_{condition_str}_Q_Values"
     if max_trials is not None:
         title_str += f" (Trials 1-{max_trials})"
         filename_str += f"_T{max_trials}"
+    
 
-    plt.title(title_str)
+    plt.title(title_str) 
     plt.xlabel('Trials Since Switch (blockTrial)')
     plt.ylabel('Estimated Q-Value (Expected Reward)')
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
     
     #Save the plot
-    filename = f"{filename_str}.png" # <-- MODIFIED
-    plt.savefig(filename)
-    print(f"Q-value plot saved as {filename}")
+    filename = f"{filename_str}.png" 
+    save_path = os.path.join("plots", filename)
+    plt.savefig(save_path)
+    print(f"Plot saved as {save_path}")
     plt.show()
     
 #CLI FUNCTIONS AND IMPLEMENTATION
@@ -501,22 +503,23 @@ def main():
     parser.add_argument('--search_iterations', type=int, default=50, help="Number of random parameter sets to try.")
     parser.add_argument('--sims_per_set', type=int, default=100, help="Number of simulations to run *for each* parameter set.")
     parser.add_argument('--max_trials', type=int, default=None, help="Truncate analysis to this many trials per block (e.g., 382).")
-
     args = parser.parse_args()
     
     start_time = time.time()
     
-    #Load and Prep Data ---
+    os.makedirs("plots", exist_ok=True)
+    
+    # --- 1. Load and Prep Data ---
     condition_str, prob_high, prob_low = parse_condition_arg(args.condition)
-    data_condition, mouse_curve_data = load_and_prep_data(args.datafile, condition_str)
+    data_condition, mouse_curve_data = load_and_prep_data(args.datafile, condition_str, args.max_trials) # <-- MODIFIED
     
     if mouse_curve_data is None:
         print("Data loading failed.")
         return
         
-    num_trials = len(mouse_curve_data)
+    num_trials = len(mouse_curve_data) #truncated length
 
-    #Find Best Model (by minimizing RMSE) ---
+    # --- 2. Find Best Model (by minimizing RMSE) ---
     best_params, best_agent_curve, best_rmse, best_q_curve = find_best_model_by_rmse(
         args.model,
         mouse_curve_data,
@@ -530,7 +533,7 @@ def main():
         print("Model fitting failed.")
         return
 
-    #Plot Results ---
+    # --- 3. Plot Results ---
     plot_results(
         mouse_curve_data, 
         best_agent_curve, 
@@ -538,10 +541,10 @@ def main():
         args.model, 
         best_params, 
         best_rmse,
-        args.max_trials
+        args.max_trials 
     )
     
-    #Plot Q-Value History ---
+    # --- 4. Plot Q-Value History ---
     if best_q_curve is not None:
         plot_q_value_history(
             best_q_curve,
@@ -549,7 +552,7 @@ def main():
             prob_low,
             condition_str,
             args.model,
-            args.max_trials
+            args.max_trials 
         )
     else:
         print("Could not generate Q-value plot (no data).")

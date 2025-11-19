@@ -58,7 +58,7 @@ Running the terminal commands will generate a plot comparing the specified agent
 **Usage:**
 
 ```bash
-python fitRLmodel_RMSE.py -m [MODEL_NAME] -c [CONDITION] --sims_per_set [NUMBER OF SIMULATIONS] --search_iterations [PARAM SEARCH ITER]
+python fitRLmodel_RMSE_T.py -m [MODEL_NAME] -c [CONDITION] --sims_per_set [NUMBER OF SIMULATIONS] --search_iterations [PARAM SEARCH ITER] --max_trials [TRIALS TO SIMULATE LEARNING]
 ```
 
 **Arguments:**
@@ -76,6 +76,8 @@ python fitRLmodel_RMSE.py -m [MODEL_NAME] -c [CONDITION] --sims_per_set [NUMBER 
 * `--search_iterations`: (Optional) How many random parameter sets to try. (Default: `50`)
 
 * `--sims_per_set`: (Optional) How many agents to simulate *per* parameter set. (Default: `100`)
+
+* `--max_trials`: (Optional) How many trials to simulate. Default = n_trials
 
 ### Example Commands
 
