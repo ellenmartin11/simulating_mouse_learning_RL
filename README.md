@@ -84,7 +84,7 @@ python fitRLmodel_RMSE_T.py -m [MODEL_NAME] -c [CONDITION] --sims_per_set [NUMBE
 **To fit the `boltzmann_anticipation` model to the 80-20 data:**
 
 ``` bash
-python fitRLmodel_RMSE.py -m boltzmann_anticipation -c 80 --search_iterations 30 --sims_per_set 500
+python fitRLmodel_RMSE_T.py -m boltzmann_anticipation -c 80 --search_iterations 30 --sims_per_set 500
 ```
 
 **To fit the simpler `epsilon_greedy` model to the 70-30 data:**
@@ -93,7 +93,14 @@ python fitRLmodel_RMSE.py -m boltzmann_anticipation -c 80 --search_iterations 30
 python fitRLmodel_RMSE.py -m boltzmann_anticipation -c 80 --search_iterations 50 --sims_per_set 1000
 ```
 
+**To fit the `boltzmann_anticipation` model while specifying trial numbers:**
+``` bash
+python fitRLmodel_RMSE_T.py -m boltzmann_anticipation -c 80 --search_iterations 30 --sims_per_set 500 --max_trials 200
+```
+
 ### Quick View of Results
 
 Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. 
+
+However, it is recommended to re-run simulations and explore the results independently as simulation predictions can shift. 
 
