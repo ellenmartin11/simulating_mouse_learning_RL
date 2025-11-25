@@ -1,13 +1,32 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-    --border: #334155;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    /* Background Colors for the 'Liquid' Feel */
+    --bg-color-primary: #e0f2f7;
+    --bg-color-secondary: #f7e0f2;
+
+    /* Card Background: Light, semi-transparent base for glass effect */
+    --card-bg-base: 255, 255, 255;
+    /* White (R, G, B) */
+    --card-bg: rgba(var(--card-bg-base), 0.5);
+    /* 50% opacity */
+
+    /* Text Colors (Based on the image's dark, muted tones) */
+    --text-primary: #1f2937;
+    /* Dark Grey/Blue for main text */
+    --text-secondary: #6b7280;
+    /* Muted Grey for labels/secondary text */
+
+    /* Accent Colors (Based on the image's teal/blue highlights) */
+    --accent: #20b2aa;
+    /* Light Sea Green/Teal for primary focus */
+    --accent-hover: #198c87;
+
+    /* Border, Radius, and Shadow for the Glass effect */
+    --border: rgba(var(--card-bg-base), 0.2);
+    /* Very light, subtle border */
+    --radius: 20px;
+    /* Increased radius for softer look */
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    /* Softer, broader shadow */
 }
 
 * {
@@ -18,7 +37,8 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-color);
+    /* Updated to the liquid background gradient */
+    background: linear-gradient(135deg, var(--bg-color-primary) 0%, var(--bg-color-secondary) 100%);
     color: var(--text-primary);
     line-height: 1.5;
     min-height: 100vh;
@@ -40,7 +60,8 @@ header {
 header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    /* Updated gradient for text highlight */
+    background: linear-gradient(to right, #4c51bf, #d185e6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
@@ -55,12 +76,15 @@ main {
     gap: 2rem;
 }
 
+/* Glassmorphism: Frosted background, subtle border, soft shadow */
 .controls {
     background-color: var(--card-bg);
     padding: 2rem;
     border-radius: var(--radius);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 form {
@@ -84,7 +108,8 @@ label {
 
 select,
 input {
-    background-color: var(--bg-color);
+    /* Slightly more opaque background for inputs to aid readability */
+    background-color: rgba(var(--card-bg-base), 0.7);
     border: 1px solid var(--border);
     color: var(--text-primary);
     padding: 0.75rem;
@@ -148,11 +173,15 @@ button:disabled {
     gap: 1rem;
 }
 
+/* Glassmorphism: Frosted background, subtle border, soft shadow */
 .stat-card {
     background-color: var(--card-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .stat-label {
@@ -167,6 +196,7 @@ button:disabled {
     font-family: monospace;
 }
 
+/* Plots Grid: Remains a single column on all screen sizes (1fr) */
 .plots-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -179,11 +209,15 @@ button:disabled {
     }
 }
 
+/* Glassmorphism: Frosted background, subtle border, soft shadow */
 .plot-card {
     background-color: var(--card-bg);
     padding: 1rem;
     border-radius: var(--radius);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .plot-card h3 {
