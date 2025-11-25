@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodent RL Model Simulations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Rodent RL Model Simulations</h1>
+            <p>Simulate and visualize Reinforcement Learning agents that mimic mouse learning from Beron et al (2022).
+                For full documentation, refer to <a
+                    href="https://github.com/ellenmartin11/simulating_mouse_learning_RL">https://github.com/ellenmartin11/simulating_mouse_learning_RL</a>
+            </p>
+        </header>
+
+        <main>
+            <section class="controls">
+                <form id="runForm">
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <select id="model" name="model" required>
+                            {% for model in models %}
+                            <option value="{{ model }}">{{ model }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condition">Condition</label>
+                        <select id="condition" name="condition" required>
+                            <option value="90">90-10</option>
+                            <option value="80">80-20</option>
+                            <option value="70">70-30</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_trials">Max Trials (Optional)</label>
+                        <input type="number" id="max_trials" name="max_trials" placeholder="e.g., 382">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="search_iterations">Search Iterations</label>
+                        <input type="number" id="search_iterations" name="search_iterations" value="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sims_per_set">Sims per Set</label>
+                        <input type="number" id="sims_per_set" name="sims_per_set" value="100">
+                    </div>
+
+                    <button type="submit" id="runBtn">Run Simulation</button>
+                </form>
+            </section>
+
+            <section id="results" class="results hidden">
+                <div class="results-header">
+                    <h2>Results</h2>
+                    <div id="loading" class="hidden">Running simulation...</div>
+                </div>
+
+                <div id="stats" class="stats-grid">
+                    <!-- Stats will be here -->
+                </div>
+
+                <div class="plots-grid">
+                    <div class="plot-card">
+                        <h3>Behavior Fit</h3>
+                        <img id="behaviorPlot" src="" alt="Behavior Plot">
+                    </div>
+                    <div class="plot-card">
+                        <h3>Q-Value History</h3>
+                        <img id="qValuePlot" src="" alt="Q-Value Plot">
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

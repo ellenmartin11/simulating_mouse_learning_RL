@@ -55,6 +55,12 @@ For the more complex Boltzmann Anticipation agent, I recommend 500 simulations, 
 
 Running the terminal commands will generate a plot comparing the specified agent's average behaviour (over specified number of simulations) with the average mouse behaviour (averaged over all mice in Beron et al (2022)). A second plot will also be generated, illustrating the agent's estimate of Q-values across trials.
 
+If the user prefers to use a flask app to run the model, the `app.py` file is included. This will allow the user to run the model through a web interface using the following command:
+
+```bash
+python app.py
+```
+
 **Usage:**
 
 ```bash
