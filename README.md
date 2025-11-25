@@ -23,7 +23,7 @@ The behavioral data used is from the Beron et al. (2022) study on mouse decision
 
 * **Data Repository:** \[[Link to Beron et al. GitHub](https://github.com/celiaberon/2ABT_behavior_models)\]
 
-In this task, the rewarding arm switches periodically, forcing mice to re-learn which arm is the rewarding one. Mice participate in three different reward conditions: 
+In this task, the rewarding arm switches periodically, forcing mice to re-learn which arm is the rewarding one. Six Mice participate in three different reward conditions: 
 
 1) 90%-10%: Rewarding arm dispenses a reward (water) 90% of the time, unrewarding arm dispenses a reward 10% of the time.
 2) 80%-20%: Rewarding arm rewards 80% of the time, unrewarding arm rewards 20% of the time. 
@@ -45,7 +45,7 @@ This project requires Python and the following libraries. You can install them v
 pip install pandas numpy matplotlib
 ```
 
-### Main Script: `fitRLmodel_RMSE.py`
+### Main Script: `fitRLmodel_RMSE_T.py`
 
 This is the main script used for all analysis. It is run from the command line and allows you to fit any defined agent to any of the three reward conditions.
 
