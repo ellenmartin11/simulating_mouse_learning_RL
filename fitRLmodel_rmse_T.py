@@ -267,7 +267,7 @@ MODELS = {
     }
 }
 
-#Core Functions ---
+#Core Functions
 
 def load_and_prep_data(datafile, condition_str, max_trials=None): 
     """Loads and prepares data, and returns the average mouse curve."""
@@ -424,7 +424,7 @@ def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, 
              label=f'Simulated Agent (RMSE={rmse:.4f})', 
              linestyle='--', linewidth=2)
     
-    #Add max_trials to title and filename ---
+    #Add max_trials to title and filename 
     title_str = f'Mouse Behavior vs. Best-Fit Agent ({model_name})'
     filename_str = f"plot_{model_name}_{condition_str}_fit_RMSE"
     if max_trials is not None:
@@ -473,7 +473,7 @@ def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, mode
     plt.axhline(y=prob_low, color='red', linestyle='-', alpha=0.5, 
                 label=f"Actual Probability (Bad Arm = {prob_low})")
 
-    #Add max_trials to title and filename ---
+    #Add max_trials to title and filename   
     title_str = f"Agent's Q-Value Learning Curve ({model_name}, {condition_str})"
     filename_str = f"plot_{model_name}_{condition_str}_Q_Values"
     if max_trials is not None:
@@ -509,7 +509,7 @@ def main():
     
     os.makedirs("plots", exist_ok=True)
     
-    # --- 1. Load and Prep Data ---
+    #Load and Prep Data
     condition_str, prob_high, prob_low = parse_condition_arg(args.condition)
     data_condition, mouse_curve_data = load_and_prep_data(args.datafile, condition_str, args.max_trials) # <-- MODIFIED
     
@@ -519,7 +519,7 @@ def main():
         
     num_trials = len(mouse_curve_data) #truncated length
 
-    # --- 2. Find Best Model (by minimizing RMSE) ---
+    # Find Best Model (by minimizing RMSE) ---
     best_params, best_agent_curve, best_rmse, best_q_curve = find_best_model_by_rmse(
         args.model,
         mouse_curve_data,
@@ -533,7 +533,7 @@ def main():
         print("Model fitting failed.")
         return
 
-    # --- 3. Plot Results ---
+    #  Plot Results
     plot_results(
         mouse_curve_data, 
         best_agent_curve, 
@@ -544,7 +544,7 @@ def main():
         args.max_trials 
     )
     
-    # --- 4. Plot Q-Value History ---
+    # Plot Q-Value History
     if best_q_curve is not None:
         plot_q_value_history(
             best_q_curve,
