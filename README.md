@@ -33,7 +33,9 @@ Because mice either receive a reward, or not, the expected value (used in Reinfo
 
 As this project will demonstrate, not all Reinforcement Learning model specifications lead to accurate q-value estimations. 
 
+Basic data exploration is available in the mouse_analyses.ipynb Jupyter Notebook. 
 
+Because of the design of the study which included periodic, unpredictable switching of the 'rewarding' arm, RL models also had to simulate the experience of mice being confused, and having to re-learn which arm is the 'rewarding' arm, after having spent several trials learning that the other arm is rewarding. This modeling is included in fitRLmodel_rmse_T.py. 
 
 ## 3. How to Run This Project
 
@@ -51,7 +53,7 @@ This is the main script used for all analysis. It is run from the command line a
 
 For simpler models, 1000 simulations can be specified, with 50 search parameter sets to try.
 
-For the more complex Boltzmann Anticipation agent, I recommend 500 simulations, reducing to 30 parameter sets. 
+For the more complex Boltzmann Anticipation agent, I recommend 500 simulations, reducing to 30 parameter sets given the number of parameter combinations and running times. 
 
 Running the terminal commands will generate a plot comparing the specified agent's average behaviour (over specified number of simulations) with the average mouse behaviour (averaged over all mice in Beron et al (2022)). A second plot will also be generated, illustrating the agent's estimate of Q-values across trials.
 
@@ -60,6 +62,8 @@ If the user prefers to use a flask app to run the model, the `app.py` file is in
 ```bash
 python app.py
 ```
+
+Model simulations are generated more slowly, so I suggest the user adjusts the parameter searchs sets as well as the number of simulations. 
 
 **Usage:**
 
@@ -106,7 +110,11 @@ python fitRLmodel_RMSE_T.py -m boltzmann_anticipation -c 80 --search_iterations 
 
 ### Quick View of Results
 
-Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. 
+Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. Results are also shown based on limiting model simulations to 200 trials.
 
 However, it is recommended to re-run simulations and explore the results independently as simulation predictions can shift. 
 
+- In summary, the best-fitting model for the full number of trials was a simple epsilon-greedy q-learning model in the 80-30 condition. This model achieved a good fit, according to RMSE standards. 
+- Notably, RL agents in the 90-10 condition consistently fit mouse behaviour poorly (RMSE > 0.1), particularly with the Boltzmann-Anticipation agent. 
+- When limiting the number of trials to 200 however, Boltzmann-Anticipation simulated agents perform well in the 90-10 condition (RMSE < 0.05), even outperforming agents in the 70-30 condition. This may suggest that, in the 90-10 condition particularly, mice are demonstrating more stochasticity because of satiation (they are no longer thirsty) because the environment is so rewarding. 
+- This project demonstrates how Reinforcement Learning can be used to both mimic rodent decision-making and learning, and also form inferences regarding how rodents make decisions (suboptimally)

@@ -309,13 +309,14 @@ def simulate_agent_with_params(model_name, params_dict, num_trials, prob_high, p
     _temp_agent = None 
     q_value_history = np.zeros((num_simulations, num_trials, num_actions))
     
+    #SIMULATING CONFUSION/RE-LEARNING
     PRE_TRAIN_TRIALS = 75 #pre-training on the wrong arm
     
     for i in range(num_simulations):
         agent = model_class(**params_dict)
         agent.reset()
         
-        #Build up incorrect q-values to simulate reward arm switching
+        #Build up incorrect q-values to simulate reward arm switching - i.e., past trials were all good, but suddenly this same behaviour is bad!
         high_arm_pretrain = 0
         for t_pre in range(PRE_TRAIN_TRIALS):
             #Pass trial number
