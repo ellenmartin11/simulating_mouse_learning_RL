@@ -57,6 +57,8 @@ For the more complex Boltzmann Anticipation agent, I recommend 500 simulations, 
 
 Running the terminal commands will generate a plot comparing the specified agent's average behaviour (over specified number of simulations) with the average mouse behaviour (averaged over all mice in Beron et al (2022)). A second plot will also be generated, illustrating the agent's estimate of Q-values across trials.
 
+While in Beron et al (2022), the average number of trials before a switch was 50, there is a huge amount of variation and likely partly accounts for stochasticity in the latter trials - there are simply fewer instances of mice completing 200+ trials before a switch. Because of this, the code includes a way for users to trunacte modelling to a desired number of trials. Surprisingly, the epsilon greedy model still performs well on the full range of trials, but it may be more representative of average mice to look at <100 trials. This Jupyter report includes models fitted on the entire trial space for transparency, and then demonstrates results for a trial limit of 200. 
+
 If the user prefers to use a flask app to run the model, the `app.py` file is included. This will allow the user to run the model through a web interface using the following command:
 
 ```bash
@@ -110,11 +112,12 @@ python fitRLmodel_RMSE_T.py -m boltzmann_anticipation -c 80 --search_iterations 
 
 ### Quick View of Results
 
-Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. Results are also shown based on limiting model simulations to 200 trials.
+Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. Results are also shown based on limiting model simulations to 100 trials, which is more representative of average mice learning and block trial conditions.
 
 However, it is recommended to re-run simulations and explore the results independently as simulation predictions can shift. 
 
-- In summary, the best-fitting model for the full number of trials was a simple epsilon-greedy q-learning model in the 80-30 condition. This model achieved a good fit, according to RMSE standards. 
-- Notably, RL agents in the 90-10 condition consistently fit mouse behaviour poorly (RMSE > 0.1), particularly with the Boltzmann-Anticipation agent. 
-- When limiting the number of trials to 200 however, Boltzmann-Anticipation simulated agents perform well in the 90-10 condition (RMSE < 0.05), even outperforming agents in the 70-30 condition. This may suggest that, in the 90-10 condition particularly, mice are demonstrating more stochasticity because of satiation (they are no longer thirsty) because the environment is so rewarding. 
-- This project demonstrates how Reinforcement Learning can be used to both mimic rodent decision-making and learning, and also form inferences regarding how rodents make decisions (suboptimally)
+- Generally, the best-fitting model for the full number of trials was a simple epsilon-greedy q-learning model in the 80-20 condition. This model achieved a good fit, according to RMSE standards. 
+- It is recommended to limit the number of trials to 100, given that the mean block length before a switch was 50 (with a wide distribution), and 'stochasticity' in latter trials is likely a statistical artifact (survivorship bias)
+- When limiting the number of trials to 100 however, the best performing model was the epsilon-greedy q-learner for the 70-30 and 80-20 conditions, but the Boltzmann-Anticipation agent was the best for the 90-10 condition, with a high minimum temperature (0.222)
+- This may suggest that, in the 90-10 condition particularly, mice are exploring more, despite learning the better arm quickly (learning rate = 0.664), perhaps due to quicker satiation, more anticipation of novelty (a change in arms) or something else unmodelled.
+- This project demonstrates how Reinforcement Learning can be used to both mimic rodent decision-making and learning, and also form inferences regarding how rodents make decisions (suboptimally).

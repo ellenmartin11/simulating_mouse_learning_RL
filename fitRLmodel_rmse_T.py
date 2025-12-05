@@ -513,7 +513,7 @@ def main():
     
     #Load and Prep Data
     condition_str, prob_high, prob_low = parse_condition_arg(args.condition)
-    data_condition, mouse_curve_data = load_and_prep_data(args.datafile, condition_str, args.max_trials) # <-- MODIFIED
+    data_condition, mouse_curve_data = load_and_prep_data(args.datafile, condition_str, args.max_trials) 
     
     if mouse_curve_data is None:
         print("Data loading failed.")
