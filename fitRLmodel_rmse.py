@@ -8,6 +8,8 @@ from itertools import product
 import time
 import sys
 
+##THIS SCRIPT DOES NOT INCORPORATE TRIAL NUMBER -- USE THE OTHER ONE fitRLmodel_rmse_T.py
+
 #HELPER FUNCTIONS (calculating RMSE, parsing experimental conditions)
 
 def calculate_rmse(agent_curve, mouse_curve):
@@ -216,7 +218,7 @@ class QLearningAgent_BoltzmannAnticipation:
         self.is_learning_phase = True
     
 
-# --- 3. Model Registry & Search Ranges ---
+# Model Registry & Search Ranges ---
 MODELS = {
     'epsilon_greedy': {
         'class': QLearningAgent_EpsilonGreedy,
@@ -268,7 +270,7 @@ MODELS = {
     }
 }
 
-# --- 4. Core Functions ---
+# Core Functions 
 
 def load_and_prep_data(datafile, condition_str, max_trials = None):
     """Loads and prepares data, and returns the average mouse curve."""

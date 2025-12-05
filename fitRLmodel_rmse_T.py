@@ -291,26 +291,27 @@ def load_and_prep_data(datafile, condition_str, max_trials=None):
     average_mouse_behavior = data_condition.groupby('blockTrial')['correct_choice'].mean()
     mouse_curve_data = average_mouse_behavior.values
     
-    print(f"Data loaded for {condition_str}. Analyzing {len(mouse_curve_data)} trials.") # <-- MODIFIED
+    print(f"Data loaded for {condition_str}. Analyzing {len(mouse_curve_data)} trials.")
     return data_condition, mouse_curve_data
 
 def simulate_agent_with_params(model_name, params_dict, num_trials, prob_high, prob_low, num_simulations):
     """
     Runs N simulations using a GIVEN set of parameters.
-    This is the "worker" function that simulates re-learning.
+    This simulates the re-learning of which the valuable arm is, given random switches in the study design. 
+    Otherwise the model fit will be atrocious, and mice will appear much more stochastic and suboptimal compared to the agents, when actually they are behaving well given the stocahstic environment.
     """
     model_class = MODELS[model_name]['class']
     agent_behavior = np.zeros((num_simulations, num_trials))
     
     #STORE Q-VALUES TO EXAMINE ESTIMATES
     #NUMBER OF ACTIONS
-    _temp_agent = model_class(**params_dict)
+    _temp_agent = model_class(**params_dict) #temporary agent inherets everything else
     num_actions = _temp_agent.num_actions
     _temp_agent = None 
     q_value_history = np.zeros((num_simulations, num_trials, num_actions))
     
     #SIMULATING CONFUSION/RE-LEARNING
-    PRE_TRAIN_TRIALS = 75 #pre-training on the wrong arm
+    PRE_TRAIN_TRIALS = 75 #pre-training on the wrong arm with 75 trials
     
     for i in range(num_simulations):
         agent = model_class(**params_dict)
@@ -321,7 +322,7 @@ def simulate_agent_with_params(model_name, params_dict, num_trials, prob_high, p
         for t_pre in range(PRE_TRAIN_TRIALS):
             #Pass trial number
             action_taken = agent.choose_action(t_pre)
-            reward_prob = prob_low
+            reward_prob = prob_low 
             if action_taken == high_arm_pretrain:
                 reward_prob = prob_high
             reward = 1 if random.uniform(0, 1) < reward_prob else 0
@@ -352,7 +353,7 @@ def simulate_agent_with_params(model_name, params_dict, num_trials, prob_high, p
 def find_best_model_by_rmse(model_name, mouse_curve_data, num_trials, prob_high, prob_low, num_search_iterations, sims_per_set):
     """
     Fits a model by finding parameters that minimize RMSE.
-    This is a "simulation-based" fit, not a -LL fit.
+    This is a simulation-based fit, not a -LL fit.
     """
     print(f"--- Starting RMSE-based Parameter Search for: {model_name} ---")
     
@@ -395,7 +396,7 @@ def find_best_model_by_rmse(model_name, mouse_curve_data, num_trials, prob_high,
         score = calculate_rmse(average_agent_behavior, mouse_curve_data)
         
         #Check if this is the best score - save the best score only not all of them
-        if score < best_rmse:
+        if score < best_rmse: #if lower (therefore better)
             print(f"  Iter {i+1}/{num_search_iterations}: New Best RMSE: {score:.4f}")
             best_rmse = score
             best_params = params_dict
@@ -429,7 +430,7 @@ def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, 
     title_str = f'Mouse Behavior vs. Best-Fit Agent ({model_name})'
     filename_str = f"plot_{model_name}_{condition_str}_fit_RMSE"
     if max_trials is not None:
-        title_str += f" (Trials 1-{max_trials})"
+        title_str += f" (Trials 1-{max_trials})" #formatting
         filename_str += f"_T{max_trials}"
 
     plt.title(title_str)
@@ -439,13 +440,13 @@ def plot_results(mouse_curve_data, agent_curve_data, condition_str, model_name, 
     plt.grid(True, linestyle='--', alpha=0.6)
     
     filename = f"{filename_str}.png"
-    save_path = os.path.join("plots", filename)
+    save_path = os.path.join("plots", filename) 
     plt.savefig(save_path)
     print(f"Plot saved as {save_path}")
     plt.show()
 
 #Q-VALUE HISTORY PLOTTING
-def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, model_name, max_trials=None): # <-- MODIFIED
+def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, model_name, max_trials=None): 
     """
     Generates and saves a plot of the agent's Q-value estimates over time.
     """
@@ -457,7 +458,7 @@ def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, mode
     q_value_good_arm = avg_q_history[:, 1]
     q_value_bad_arm = avg_q_history[:, 0]
 
-    #Agent's internal estimates
+    #Agent's internal estimates of value
     plt.plot(np.arange(1, len(q_value_good_arm) + 1), 
              q_value_good_arm, 
              label="Agent's Q-Value for 'Good' Arm", 
@@ -474,7 +475,7 @@ def plot_q_value_history(avg_q_history, prob_high, prob_low, condition_str, mode
     plt.axhline(y=prob_low, color='red', linestyle='-', alpha=0.5, 
                 label=f"Actual Probability (Bad Arm = {prob_low})")
 
-    #Add max_trials to title and filename   
+    #Add max_trials to title and filename (formatting) 
     title_str = f"Agent's Q-Value Learning Curve ({model_name}, {condition_str})"
     filename_str = f"plot_{model_name}_{condition_str}_Q_Values"
     if max_trials is not None:
@@ -520,7 +521,7 @@ def main():
         
     num_trials = len(mouse_curve_data) #truncated length
 
-    # Find Best Model (by minimizing RMSE) ---
+    #Find Best Model (by minimizing RMSE)
     best_params, best_agent_curve, best_rmse, best_q_curve = find_best_model_by_rmse(
         args.model,
         mouse_curve_data,
@@ -534,7 +535,7 @@ def main():
         print("Model fitting failed.")
         return
 
-    #  Plot Results
+    # Plot Results
     plot_results(
         mouse_curve_data, 
         best_agent_curve, 
@@ -545,7 +546,7 @@ def main():
         args.max_trials 
     )
     
-    # Plot Q-Value History
+    #Plot Q-Value History
     if best_q_curve is not None:
         plot_q_value_history(
             best_q_curve,
@@ -563,7 +564,7 @@ def main():
     if args.max_trials is not None:
         print(f"Analysis truncated to {args.max_trials} trials.")
     print(f"Best-Fit Params (from RMSE): {best_params}")
-    print(f"Final Behavior Fit (RMSE): {best_rmse:.4f}")
+    print(f"Final Behavior Fit (RMSE): {best_rmse:.4f}") 
     print(f"Total time: {time.time() - start_time:.2f} seconds")
 
 if __name__ == "__main__":
