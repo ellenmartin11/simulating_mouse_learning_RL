@@ -33,6 +33,8 @@ Because mice either receive a reward, or not, the expected value (used in Reinfo
 
 As this project will demonstrate, not all Reinforcement Learning model specifications lead to accurate q-value estimations. 
 
+**A SUMMARY OF FINDINGS AND MODELLING METHODOLOGY IS AVAILABLE IN [Formatted Results](Formatted_Results.ipynb)**
+
 Basic data exploration is available in the mouse_analyses.ipynb Jupyter Notebook. 
 
 Because of the design of the study which included periodic, unpredictable switching of the 'rewarding' arm, RL models also had to simulate the experience of mice being confused, and having to re-learn which arm is the 'rewarding' arm, after having spent several trials learning that the other arm is rewarding. This modeling is included in fitRLmodel_rmse_T.py. 
@@ -110,11 +112,11 @@ python fitRLmodel_RMSE.py -m boltzmann_anticipation -c 80 --search_iterations 50
 python fitRLmodel_RMSE_T.py -m boltzmann_anticipation -c 80 --search_iterations 30 --sims_per_set 500 --max_trials 200
 ```
 
-### Quick View of Results
+### Main View of Results
 
-Key results and model interpretations can be found in the [Results Jupyter Notebook](results.ipynb). This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. Results are also shown based on limiting model simulations to 100 trials, which is more representative of average mice learning and block trial conditions.
+Please use the [Formatted Results Jupyter Notebook](Formatted_Results.ipynb) which contains model specification, key results and model interpretations. This notebook includes main models implemented on all three reward conditions, parameter estimates from simulations, simulated agent learning compared to average mouse learning (RMSE), as well as learning curves and q-value history curves. Results are also shown based on limiting model simulations to 100 trials, which is more representative of average mice learning and block trial conditions.
 
-However, it is recommended to re-run simulations and explore the results independently as simulation predictions can shift. 
+It is also recommended to re-run simulations and explore the results independently as simulation predictions can shift.
 
 - Generally, the best-fitting model for the full number of trials was a simple epsilon-greedy q-learning model in the 80-20 condition. This model achieved a good fit, according to RMSE standards. 
 - It is recommended to limit the number of trials to 100, given that the mean block length before a switch was 50 (with a wide distribution), and 'stochasticity' in latter trials is likely a statistical artifact (survivorship bias)
